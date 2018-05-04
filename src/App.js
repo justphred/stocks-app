@@ -20,13 +20,13 @@ class TickerItem extends Component {
                 </li>
     )
   }
-}
+} // End component TickerItem
 
 class TickerItemList extends Component {
   render () {
     let tickerItems = this.props.items.map( (item, ndx) => {
       return (
-        <TickerItem symbol={item.symbol} value={item.currentValue} />
+        <TickerItem key={item.symbol} symbol={item.symbol} value={item.currentValue} />
       );
     } );
     return (
@@ -37,7 +37,17 @@ class TickerItemList extends Component {
       </div>
     );
   }
-}
+} // End class TickerItemList
+
+class SearchBar extends Component {
+  render () {
+    return (
+      <div style={{"margin-top": ".5em", padding: ".5em"}}>
+        <input type="text" size="30" placeholder="Enter A Stock Symbol Here"/>
+      </div>
+    );
+  };
+} // End class SearchBar
 
 class App extends Component {
   constructor (props) {
@@ -66,9 +76,7 @@ class App extends Component {
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
           <h1 className="App-title">Welcome to React</h1>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <SearchBar />
         <TickerItemList items={ this.state.stockItems }/>
       </div>
     );
