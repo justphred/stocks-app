@@ -3,18 +3,20 @@ import React, { Component } from 'react';
 import './App.css';
 
 class TickerItem extends Component {
+  myStyles = {display: "inline-block",
+              "padding-top":".25em",
+              "padding-bottom":".25em",
+              "padding-right":"1em",
+              "padding-left":"1em",
+              margin: ".5em",
+              "background-color": "#c5cce2",
+              "border-radius": ".45em",
+              border: "1px solid #343b49"
+            }
+
   render() {
     return (
-      <li style={{display: "inline-block",
-                  "padding-top":".25em",
-                  "padding-bottom":".25em",
-                  "padding-right":"1em",
-                  "padding-left":"1em",
-                  margin: ".5em",
-                  "background-color": "#c5cce2",
-                  "border-radius": ".45em",
-                  border: "1px solid #343b49"
-                }}>
+      <li style={this.myStyles}>
                   <p>{this.props.symbol}</p>
                   <p>{this.props.value}</p>
                 </li>
@@ -40,10 +42,17 @@ class TickerItemList extends Component {
 } // End class TickerItemList
 
 class SearchBar extends Component {
+  handleUserInput(event) {
+    if(event.charCode === 13) {
+      this.props.getInput(event.target.value);
+    }
+  }
+
   render () {
     return (
       <div style={{"margin-top": ".5em", padding: ".5em"}}>
-        <input type="text" size="30" placeholder="Enter A Stock Symbol Here"/>
+        <label name="add-symbol">Add Another Symbol</label>
+        <input name="add-symbol" type="text" size="5" placeholder="Symbol" onKeyUp={this.handleUserInput}/>
       </div>
     );
   };
