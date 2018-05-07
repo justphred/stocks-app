@@ -42,17 +42,21 @@ class TickerItemList extends Component {
 } // End class TickerItemList
 
 class SearchBar extends Component {
-  handleUserInput(event) {
-    if(event.charCode === 13) {
-      this.props.getInput(event.target.value);
+
+  handleUserInput = (event) => {
+    if((event.keyCode === 13) && (event.target.value.length > 1)) {
+      this.props.getUserInput(event.target.value);      
+      // alert("New ticker symbol: " + event.target.value);
+      event.target.value = "";
     }
   }
 
   render () {
     return (
       <div style={{"margin-top": ".5em", padding: ".5em"}}>
-        <label name="add-symbol">Add Another Symbol</label>
-        <input name="add-symbol" type="text" size="5" placeholder="Symbol" onKeyUp={this.handleUserInput}/>
+        <label name="add-symbol">Add Another Symbol: </label>
+        <input name="add-symbol" type="text" size="4" maxLength="4"
+               placeholder="Symbol" onKeyDown={this.handleUserInput}/>
       </div>
     );
   };
@@ -78,6 +82,11 @@ class App extends Component {
     };
   }
 
+  addNewStockSymbol = (item) => {
+    let update = this.state.stockItems.concat([{symbol: item, currentValue: "?"}]);
+    this.setState({stockItems: update});
+  }
+
   render() {
     return (
       <div className="App">
@@ -85,7 +94,7 @@ class App extends Component {
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
           <h1 className="App-title">Welcome to React</h1>
         </header>
-        <SearchBar />
+        <SearchBar getUserInput={this.addNewStockSymbol}/>
         <TickerItemList items={ this.state.stockItems }/>
       </div>
     );
