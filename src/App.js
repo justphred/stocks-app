@@ -2,6 +2,21 @@ import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 
+let fakeServerData = {
+  stockItems: [
+    { symbol: "ABC",
+      currentValue: 123 },
+    { symbol: "DEF",
+      currentValue: 345 },
+    { symbol: "HIJK",
+      currentValue: 7 },
+    { symbol: "LOM",
+      currentValue: 1123 },
+    { symbol: "FRT",
+      currentValue: 23 }
+  ]
+}
+
 class TickerItem extends Component {
   myStyles = {display: "inline-block",
               "padding-top":".25em",
@@ -25,16 +40,20 @@ class TickerItem extends Component {
 } // End component TickerItem
 
 class TickerItemList extends Component {
+  tickerItems = [];
   render () {
-    let tickerItems = this.props.items.map( (item, ndx) => {
-      return (
-        <TickerItem key={item.symbol} symbol={item.symbol} value={item.currentValue} />
-      );
-    } );
+    if (this.props.items) {
+      this.tickerItems = this.props.items.map( (item, ndx) => {
+        return (
+          <TickerItem key={item.symbol} symbol={item.symbol} value={item.currentValue} />
+        );
+      } );
+    }
+
     return (
       <div>
         <ul>
-          {tickerItems}
+          {this.tickerItems}
         </ul>
       </div>
     );
@@ -45,7 +64,7 @@ class SearchBar extends Component {
 
   handleUserInput = (event) => {
     if((event.keyCode === 13) && (event.target.value.length > 1)) {
-      this.props.getUserInput(event.target.value);      
+      this.props.getUserInput(event.target.value);
       // alert("New ticker symbol: " + event.target.value);
       event.target.value = "";
     }
@@ -67,19 +86,17 @@ class App extends Component {
     super(props);
 
     this.state = {
-      stockItems: [
-        { symbol: "ABC",
-          currentValue: 123 },
-        { symbol: "DEF",
-          currentValue: 345 },
-        { symbol: "HIJK",
-          currentValue: 7 },
-        { symbol: "LOM",
-          currentValue: 1123 },
-        { symbol: "FRT",
-          currentValue: 23 }
-      ]
+      // serverData: {}
     };
+  }
+
+  // componentWillMount() {
+  //   this.setState({serverData: fakeServerData});
+  // }
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({serverData: fakeServerData});
+    }, 3000);
   }
 
   addNewStockSymbol = (item) => {
@@ -95,7 +112,11 @@ class App extends Component {
           <h1 className="App-title">Welcome to React</h1>
         </header>
         <SearchBar getUserInput={this.addNewStockSymbol}/>
-        <TickerItemList items={ this.state.stockItems }/>
+        {/* <TickerItemList items={ this.state.serverData.stockItems }/> */}
+        {/* <TickerItemList items={ this.state.serverData &&
+                                this.state.serverData.stockItems}/> */}
+        {this.state.serverData &&
+          <TickerItemList items={ this.state.serverData.stockItems }/>}
       </div>
     );
   }
