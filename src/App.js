@@ -39,14 +39,15 @@ class App extends Component {
 
   addNewStockSymbol = (item) => {
     let update = this.state.serverData.stockItems.concat([{symbol: item, currentValue: "?"}]);
-    this.setState({stockItems: update});
+    // this.setState({stockItems: update});
+    this.setState({serverData: {stockItems: update}});
   }
 
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">Reactive Stocks</h1>
         </header>
         <SearchBar getUserInput={this.addNewStockSymbol}/>
         {/* {this.state.serverData &&

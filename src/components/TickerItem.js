@@ -2,13 +2,13 @@ import React from "react";
 
 class TickerItem extends React.Component {
   myStyles = {display: "inline-block",
-              "padding-top":".25em",
-              "padding-bottom":".25em",
-              "padding-right":"1em",
-              "padding-left":"1em",
+              "paddingTop":".25em",
+              "paddingBottom":".25em",
+              "paddingRight":"1em",
+              "paddingLeft":"1em",
               margin: ".5em",
-              "background-color": "#c5cce2",
-              "border-radius": ".45em",
+              "backgroundColor": "#c5cce2",
+              "borderRadius": ".45em",
               border: "1px solid #343b49"
             }
 

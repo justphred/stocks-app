@@ -2,10 +2,18 @@ import React from "react";
 import TickerItem from "./TickerItem";
 
 class TickerItemList extends React.Component {
-  tickerItems = [];
+  containerStyles =  {
+     display: "inline-block",
+     padding: ".1em",
+     border: "1px solid #778096",
+     "borderRadius": ".4em"
+  };
+
   render () {
+    let tickerItems = [];
+
     if (this.props.items) {
-      this.tickerItems = this.props.items.map( (item, ndx) => {
+      tickerItems = this.props.items.map( (item, ndx) => {
         return (
           <TickerItem key={item.symbol} symbol={item.symbol} value={item.currentValue} />
         );
@@ -13,13 +21,9 @@ class TickerItemList extends React.Component {
     }
 
     return (
-      <div style={{padding: ".1em",
-                   border: "1px solid #fff",
-                   "margin-right": "20%",
-                   "margin-left": "20%"
-                 }}>
+      <div style={this.containerStyles}>
         <ul>
-          {this.tickerItems}
+          {tickerItems}
         </ul>
       </div>
     );

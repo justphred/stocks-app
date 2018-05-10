@@ -12,7 +12,7 @@ class SearchBar extends React.Component {
 
   render () {
     return (
-      <div style={{"margin-top": ".5em", padding: ".5em"}}>
+      <div style={{"marginTop": ".5em", padding: ".5em"}}>
         <label name="add-symbol">Add Another Symbol: </label>
         <input name="add-symbol" type="text" size="4" maxLength="4"
                placeholder="Symbol" onKeyDown={this.handleUserInput}/>
