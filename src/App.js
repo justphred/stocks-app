@@ -31,27 +31,13 @@ let fakeBatchFetchResponse = {
 
 let fakeUserData = {
   name: "Matt Dillon",
-  stockList: ["MSFT", "FB", "AAPL"]
+  symbols: ["MSFT", "FB", "AAPL"]
 };
 
 let alphavantageAPIKey = "S6ZCCR85WHEGSM8Z";
 
-// let fakeServerData = {
-//   stockItems: [
-//     { symbol: "ABC",
-//       currentValue: 123 },
-//     { symbol: "DEF",
-//       currentValue: 345 },
-//     { symbol: "HIJK",
-//       currentValue: 7 },
-//     { symbol: "LOM",
-//       currentValue: 1123 },
-//     { symbol: "FRT",
-//       currentValue: 23 }
-//   ]
-// }
-
-// let testURL = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=MSFT,FB,AAPL&apikey=demo";
+// let testURL = "https://www.alphavantage.co/query?
+//                function=BATCH_STOCK_QUOTES&symbols=MSFT,FB,AAPL&apikey=demo";
 
 class App extends Component {
   constructor (props) {
@@ -62,12 +48,12 @@ class App extends Component {
     };
   }
 
-  baseBatchFetchUrl = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&";
+  baseBatchFetchUrl = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=";
 
   buildBatchRequestURL = (symbols) => {
-    let url = "";
-    
+    let url =  `${this.baseBatchFetchUrl}${this.state.userData.symbols}&apikey=${alphavantageAPIKey}`;
 
+    return url;
   };
 
   componentWillMount() {
@@ -75,36 +61,41 @@ class App extends Component {
   };
 
   componentDidMount() {
-    setTimeout(() => {
-      let data = fakeBatchFetchResponse;
-      let metaData = data["Meta Data"];
-      let sourceLabel = metaData["2. Notes"];
-      let batchData = data["Stock Quotes"]
-        .map((item) => {
-          let dateTime = item["4. timestamp"].trim().split(' ');
-          return (
-            {
-              symbol: item["1. symbol"],
-              currentValue:  item["2. price"],
-              timestamp: {date: dateTime[0], time: dateTime[1]}
-            }
-          )
-        }
-      ); // end map((item => {...}))
+    let url = this.buildBatchRequestURL();
+    console.log(url);
 
-      console.log (batchData);
+    fetch(url)
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log(data);
 
-      // this.setState({serverData: fakeServerData});
-      this.setState(
-        {
-          serverData: {
-            stockItems: batchData,
-            sourceLabel: sourceLabel
+        let metaData = data["Meta Data"];
+        let sourceLabel = metaData["2. Notes"];
+        let batchData = data["Stock Quotes"]
+          .map((item) => {
+            let dateTime = item["4. timestamp"].trim().split(' ');
+            return (
+              {
+                symbol: item["1. symbol"],
+                currentValue:  item["2. price"],
+                timestamp: {date: dateTime[0], time: dateTime[1]}
+              }
+            )
           }
-        }
-      );
+        ); // end map((item => {...}))
 
-    }, 1500);
+        console.log (batchData);
+
+        this.setState(
+          {
+            serverData: {
+              stockItems: batchData,
+              sourceLabel: sourceLabel
+            }
+          }
+        );
+    } ); // End .then((data) => {})
+
   } // End componentDidMount()
 
   addNewStockSymbol = (item) => {
@@ -153,5 +144,38 @@ export default App;
 //
 // } // End componentWillMount()
 
+// componentDidMount() {
+//   console.log(this.buildBatchRequestURL());
+//
+//   setTimeout(() => {
+//     let data = fakeBatchFetchResponse;
+//     let metaData = data["Meta Data"];
+//     let sourceLabel = metaData["2. Notes"];
+//     let batchData = data["Stock Quotes"]
+//       .map((item) => {
+//         let dateTime = item["4. timestamp"].trim().split(' ');
+//         return (
+//           {
+//             symbol: item["1. symbol"],
+//             currentValue:  item["2. price"],
+//             timestamp: {date: dateTime[0], time: dateTime[1]}
+//           }
+//         )
+//       }
+//     ); // end map((item => {...}))
+//
+//     console.log (batchData);
+//
+//     this.setState(
+//       {
+//         serverData: {
+//           stockItems: batchData,
+//           sourceLabel: sourceLabel
+//         }
+//       }
+//     );
+//
+//   }, 1500);
+// } // End componentDidMount()
 
 // bottomline
