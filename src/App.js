@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
-import TickerItemList from "./components/TickerItemList"
+import TickerItemList from "./components/TickerItemList";
 import SearchBar from "./components/SearchBar";
+import SourceCite from "./components/SourceCite";
 
 let fakeBatchFetchResponse = {
     "Meta Data": {
@@ -27,6 +28,13 @@ let fakeBatchFetchResponse = {
         }
     ]
 };
+
+let fakeUserData = {
+  name: "Matt Dillon",
+  stockList: ["MSFT", "FB", "AAPL"]
+};
+
+let alphavantageAPIKey = "S6ZCCR85WHEGSM8Z";
 
 // let fakeServerData = {
 //   stockItems: [
@@ -54,29 +62,17 @@ class App extends Component {
     };
   }
 
-  // componentWillMount() {
-  //   // fetch(testURL)
-  //   //   .then((resp) => resp.json())
-  //   //   .then((data) => {
-  //   //     console.log(data);
-  //   // });
-  //   // let data = fakeBatchFetchResponse;
-  //   let batchData = fakeBatchFetchResponse["Stock Quotes"]
-  //     .map((item) => {
-  //       let dateTime = item["4. timestamp"].trim().split(' ');
-  //       return (
-  //         {
-  //           symbol: item["1. symbol"],
-  //           price:  item["2. price"],
-  //           timestamp: {date: dateTime[0], time: dateTime[1]}
-  //         }
-  //       )
-  //     }
-  //   ); // end map((item => {...}))
-  //
-  //   console.log(batchData);
-  //
-  // } // End componentWillMount()
+  baseBatchFetchUrl = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&";
+
+  buildBatchRequestURL = (symbols) => {
+    let url = "";
+    
+
+  };
+
+  componentWillMount() {
+    this.setState({userData: fakeUserData});
+  };
 
   componentDidMount() {
     setTimeout(() => {
@@ -99,10 +95,17 @@ class App extends Component {
       console.log (batchData);
 
       // this.setState({serverData: fakeServerData});
-      // this.setState({serverData: {stockItems: batchData, sourceLabel: data["Meta Data"].["3. Notes"]}});
-      this.setState({serverData: {stockItems: batchData, sourceLabel: sourceLabel } });
+      this.setState(
+        {
+          serverData: {
+            stockItems: batchData,
+            sourceLabel: sourceLabel
+          }
+        }
+      );
+
     }, 1500);
-  }
+  } // End componentDidMount()
 
   addNewStockSymbol = (item) => {
     let update = this.state.serverData.stockItems.concat([{symbol: item, currentValue: "?"}]);
@@ -115,16 +118,40 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">Reactive Stocks</h1>
         </header>
-        <SearchBar getUserInput={this.addNewStockSymbol}/>
-        {/* {this.state.serverData &&
-          <TickerItemList items={ this.state.serverData.stockItems }/>} */}
+        <SearchBar getUserInput={ this.addNewStockSymbol }/>
         <TickerItemList items={ this.state.serverData && this.state.serverData.stockItems }/>
+        { this.state.serverData && this.state.serverData.sourceLabel &&
+          <SourceCite citation={ this.state.serverData.sourceLabel } /> }
       </div>
     );
   }
 }
 
 export default App;
+
+// componentWillMount() {
+//   // fetch(testURL)
+//   //   .then((resp) => resp.json())
+//   //   .then((data) => {
+//   //     console.log(data);
+//   // });
+//   // let data = fakeBatchFetchResponse;
+//   let batchData = fakeBatchFetchResponse["Stock Quotes"]
+//     .map((item) => {
+//       let dateTime = item["4. timestamp"].trim().split(' ');
+//       return (
+//         {
+//           symbol: item["1. symbol"],
+//           price:  item["2. price"],
+//           timestamp: {date: dateTime[0], time: dateTime[1]}
+//         }
+//       )
+//     }
+//   ); // end map((item => {...}))
+//
+//   console.log(batchData);
+//
+// } // End componentWillMount()
 
 
 // bottomline
