@@ -4,30 +4,30 @@ import TickerItemList from "./components/TickerItemList";
 import SearchBar from "./components/SearchBar";
 import SourceCite from "./components/SourceCite";
 
-let fakeBatchFetchResponse = {
-    "Meta Data": {
-        "1. Information": "Batch Stock Market Quotes",
-        "2. Notes": "IEX Real-Time Price provided for free by IEX (https://iextrading.com/developer/).",
-        "3. Time Zone": "US/Eastern"
-    },
-    "Stock Quotes": [
-        {   "1. symbol": "MSFT",
-            "2. price": "94.6200",
-            "3. volume": "--",
-            "4. timestamp": "2018-04-26 16:53:10"
-        },
-        {   "1. symbol": "FB",
-            "2. price": "175.2700",
-            "3. volume": "--",
-            "4. timestamp": "2018-04-26 16:04:41"
-        },
-        {   "1. symbol": "AAPL",
-            "2. price": "164.2300",
-            "3. volume": "--",
-            "4. timestamp": "2018-04-26 15:59:57"
-        }
-    ]
-};
+// let fakeBatchFetchResponse = {
+//     "Meta Data": {
+//         "1. Information": "Batch Stock Market Quotes",
+//         "2. Notes": "IEX Real-Time Price provided for free by IEX (https://iextrading.com/developer/).",
+//         "3. Time Zone": "US/Eastern"
+//     },
+//     "Stock Quotes": [
+//         {   "1. symbol": "MSFT",
+//             "2. price": "94.6200",
+//             "3. volume": "--",
+//             "4. timestamp": "2018-04-26 16:53:10"
+//         },
+//         {   "1. symbol": "FB",
+//             "2. price": "175.2700",
+//             "3. volume": "--",
+//             "4. timestamp": "2018-04-26 16:04:41"
+//         },
+//         {   "1. symbol": "AAPL",
+//             "2. price": "164.2300",
+//             "3. volume": "--",
+//             "4. timestamp": "2018-04-26 15:59:57"
+//         }
+//     ]
+// };
 
 let fakeUserData = {
   name: "Matt Dillon",
@@ -103,6 +103,14 @@ class App extends Component {
     this.setState({serverData: {stockItems: update}});
   }
 
+  getUserAction = (item, action) => {
+    console.log (item, action);
+
+    if(action === "chart") {
+
+    }
+  }
+
   render() {
     return (
       <div className="App">
@@ -110,9 +118,10 @@ class App extends Component {
           <h1 className="App-title">Reactive Stocks</h1>
         </header>
         <SearchBar getUserInput={ this.addNewStockSymbol }/>
-        <TickerItemList items={ this.state.serverData && this.state.serverData.stockItems }/>
+        <TickerItemList userAction={ this.getUserAction}
+            items={ this.state.serverData && this.state.serverData.stockItems }/>
         { this.state.serverData && this.state.serverData.sourceLabel &&
-          <SourceCite citation={ this.state.serverData.sourceLabel } /> }
+            <SourceCite citation={ this.state.serverData.sourceLabel } /> }
       </div>
     );
   }

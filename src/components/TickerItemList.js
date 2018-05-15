@@ -9,13 +9,19 @@ class TickerItemList extends React.Component {
      "borderRadius": ".4em"
   };
 
+  // itemClicked = (ev) => {
+  //   console.log(ev);
+  // }
+
   render () {
     let tickerItems = [];
 
     if (this.props.items) {
       tickerItems = this.props.items.map( (item, ndx) => {
         return (
-          <TickerItem key={item.symbol} symbol={item.symbol} value={item.currentValue} />
+          <TickerItem key={item.symbol}
+                      symbol={item.symbol}
+                      value={item.currentValue}/>
         );
       } );
     }
