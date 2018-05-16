@@ -22,12 +22,21 @@ class TickerItem extends React.Component {
   // var siblings = n => [...n.parentElement.children].filter(c=>c.nodeType == 1 && c!=n)
 
   itemClicked = (ev) => {
-    console.log("item clicked", ev);
+    // console.log("item clicked", ev);
+    let ti = undefined;
+    ti = ev.target.className.includes("TickerItem") ? ev.target : ev.target.parentNode;
+    // ti.className = ti.className + " TickerItem-selected";
+    // let siblings = (ti) => [...ti.parentNode.children].filter((c) => c.nodeType === 1 && c !== ti);
+    // console.log(siblings);
+    ti.parentNode.querySelectorAll(".TickerItem-selected")
+        .forEach(i => i.classList.remove("TickerItem-selected"));
+    ti.classList.add("TickerItem-selected");
+
   }
 
   render() {
     return (
-      <li style={this.myStyles} onClick={this.itemClicked} >
+      <li className={"TickerItem"} style={this.myStyles} onClick={this.itemClicked} >
                   <p >{this.props.symbol}</p>
                   <p>{this.props.value}</p>
                 </li>
