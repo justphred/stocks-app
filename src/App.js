@@ -103,12 +103,9 @@ class App extends Component {
     this.setState({serverData: {stockItems: update}});
   }
 
-  getUserAction = (item, action) => {
-    console.log (item, action);
+  getSelectedItem = (targetItem) => {
+    console.log (targetItem);
 
-    if(action === "chart") {
-
-    }
   }
 
   render() {
@@ -118,7 +115,7 @@ class App extends Component {
           <h1 className="App-title">Reactive Stocks</h1>
         </header>
         <SearchBar getUserInput={ this.addNewStockSymbol }/>
-        <TickerItemList userAction={ this.getUserAction}
+        <TickerItemList getUserSelection={ this.getSelectedItem}
             items={ this.state.serverData && this.state.serverData.stockItems }/>
         { this.state.serverData && this.state.serverData.sourceLabel &&
             <SourceCite citation={ this.state.serverData.sourceLabel } /> }

@@ -21,7 +21,8 @@ class TickerItemList extends React.Component {
         return (
           <TickerItem key={item.symbol}
                       symbol={item.symbol}
-                      value={item.currentValue}/>
+                      value={item.currentValue}
+                      getUserSelection={this.props.getUserSelection}/>
         );
       } );
     }
