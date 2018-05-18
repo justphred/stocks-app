@@ -39,9 +39,6 @@ let alphavantageAPIKey = "S6ZCCR85WHEGSM8Z";
 
 // let testURL = "https://www.alphavantage.co/query?
 //                function=BATCH_STOCK_QUOTES&symbols=MSFT,FB,AAPL&apikey=demo";
-// https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=MSFT&apikey=demo
-// https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=demo
-
 
 class App extends Component {
   constructor (props) {
@@ -54,21 +51,11 @@ class App extends Component {
 
   baseBatchFetchUrl = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=";
 
-  // baseWeeklySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=";
-
-  // baseDailySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
-
   buildBatchRequestURL = (symbols) => {
     let url =  `${this.baseBatchFetchUrl}${this.state.userData.symbols}&apikey=${alphavantageAPIKey}`;
 
     return url;
   };
-
-  // buildWeeklySeriesRequestURL = (symbol) => {
-  //   let url = `${this.baseWeeklySeriesFetchUrl}${symbol}&apikey=${alphavantageAPIKey}`;
-  //
-  //   return url;
-  // };
 
   componentWillMount() {
     this.setState({userData: fakeUserData});
@@ -79,9 +66,9 @@ class App extends Component {
     console.log(url);
 
     fetch(url)
-      .then( (resp) => resp.json())
-      .then( (data) => {
-        // console.log(data);
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log(data);
 
         let metaData = data["Meta Data"];
         let sourceLabel = metaData["2. Notes"];
@@ -98,7 +85,7 @@ class App extends Component {
           }
         ); // end map((item => {...}))
 
-        // console.log (batchData);
+        console.log (batchData);
 
         this.setState(
           {
@@ -125,21 +112,6 @@ class App extends Component {
     this.setState({selectedItem: targetItem});
   }
 
-  fetchSummaryStockData = () => {
-
-  }
-
-  // fetchChartData = (symbol) => {
-  //   let url = this.buildWeeklySeriesRequestURL(symbol);
-  //
-  //   fetch(url)
-  //     .then( (resp) => resp.json())
-  //     .then( (data) => {
-  //       console.log(data);
-  //     }
-  //   ); // End .then( (data) => {
-  // }
-
   render() {
     return (
       <div className="App">
@@ -158,6 +130,5 @@ class App extends Component {
 }
 
 export default App;
-
 
 // bottomline
