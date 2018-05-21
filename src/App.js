@@ -57,19 +57,13 @@ class App extends Component {
     return url;
   };
 
-  componentWillMount() {
-    this.setState({userData: fakeUserData});
-  };
-
-  componentDidMount() {
-    let url = this.buildBatchRequestURL();
-    console.log(url);
-
+  fetchBatchData = (url) => {
     fetch(url)
       .then((resp) => resp.json())
       .then((data) => {
         console.log(data);
 
+        //return data;
         let metaData = data["Meta Data"];
         let sourceLabel = metaData["2. Notes"];
         let batchData = data["Stock Quotes"]
@@ -98,6 +92,52 @@ class App extends Component {
           }
         );
     } ); // End .then((data) => {})
+
+  }
+
+  componentWillMount() {
+    this.setState({userData: fakeUserData});
+  };
+
+  componentDidMount() {
+    let url = this.buildBatchRequestURL();
+    console.log(url);
+
+    this.fetchBatchData(url);
+
+    // fetch(url)
+    //   .then((resp) => resp.json())
+    //   .then((data) => {
+    //     console.log(data);
+    //
+    //     let metaData = data["Meta Data"];
+    //     let sourceLabel = metaData["2. Notes"];
+    //     let batchData = data["Stock Quotes"]
+    //       .map((item) => {
+    //         let dateTime = item["4. timestamp"].trim().split(' ');
+    //         return (
+    //           {
+    //             symbol: item["1. symbol"],
+    //             currentValue:  item["2. price"],
+    //             timestamp: {date: dateTime[0], time: dateTime[1]}
+    //           }
+    //         )
+    //       }
+    //     ); // end map((item => {...}))
+    //
+    //     console.log (batchData);
+    //
+    //     this.setState(
+    //       {
+    //         serverData: {
+    //           stockItems: batchData,
+    //           sourceLabel: sourceLabel
+    //         },
+    //
+    //         selectedItem: undefined
+    //       }
+    //     );
+    // } ); // End .then((data) => {})
 
   } // End componentDidMount()
 
