@@ -163,7 +163,7 @@ class App extends Component {
   fetchChartData = (symbol) => {
     let url = this.buildWeeklySeriesRequestURL(symbol);
     console.log(url);
-    
+
     fetch(url)
       .then( (resp) => resp.json())
       .then( (data) => {

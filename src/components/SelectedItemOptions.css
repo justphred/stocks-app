@@ -1,0 +1,13 @@
+
+.selectedLabel {
+  padding-right: .25em;
+  color: #c5cce2
+}
+.btnDisabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  color: #c0c0c0;
+}
+.btnOptions {
+  color: #253c70;
+}

@@ -1,4 +1,5 @@
 import React from "react";
+import "./SelectedItemOptions.css";
 
 // https://stackoverflow.com/questions/14750078/style-disabled-button-with-css
 
@@ -17,14 +18,29 @@ class SelectedItemOptions extends React.Component {
         <div style={{display: "inline-block",
                       marginRight: ".4em"
                       }} >
-          <span style={{paddingRight:".25em", color: "#c5cce2"}}>Selected Item:</span>
+          <span className="selectedLabel">Selected Item:</span>
           <span style={{color: "#e3e6ef"}}>
             {!this.props.selected ? "None" : this.props.selected}
           </span>
         </div>
-        <span><button name="chart" onClick={this.optionClick} >Chart</button></span>
-        <span><button name="edit" onClick={this.optionClick} >Edit</button></span>
-        <span><button name="delete" onClick={this.optionClick} >Delete</button></span>
+        <span>
+          <button name="chart" onClick={this.optionClick}
+              className={`${!this.props.selected ? 'btnDisabled' : "btnOptions"}`} >
+            Chart
+          </button>
+        </span>
+        <span>
+          <button name="edit" onClick={this.optionClick}
+              className={`${!this.props.selected ? 'btnDisabled' : "btnOptions"}`}>
+            Edit
+          </button>
+        </span>
+        <span>
+          <button name="delete" onClick={this.optionClick}
+              className={`${!this.props.selected ? 'btnDisabled' : "btnOptions"}`}>
+            Delete
+          </button>
+        </span>
 
       </div>
     );
