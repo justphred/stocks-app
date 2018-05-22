@@ -14,3 +14,6 @@
   border-radius: .45em;
   border: 1px solid #343b49;
 }
+.tickerItem p {
+  cursor: pointer;
+}

@@ -5,30 +5,30 @@ import SearchBar from "./components/SearchBar";
 import SourceCite from "./components/SourceCite";
 import SelectedItemOptions from "./components/SelectedItemOptions";
 
-// let fakeBatchFetchResponse = {
-//     "Meta Data": {
-//         "1. Information": "Batch Stock Market Quotes",
-//         "2. Notes": "IEX Real-Time Price provided for free by IEX (https://iextrading.com/developer/).",
-//         "3. Time Zone": "US/Eastern"
-//     },
-//     "Stock Quotes": [
-//         {   "1. symbol": "MSFT",
-//             "2. price": "94.6200",
-//             "3. volume": "--",
-//             "4. timestamp": "2018-04-26 16:53:10"
-//         },
-//         {   "1. symbol": "FB",
-//             "2. price": "175.2700",
-//             "3. volume": "--",
-//             "4. timestamp": "2018-04-26 16:04:41"
-//         },
-//         {   "1. symbol": "AAPL",
-//             "2. price": "164.2300",
-//             "3. volume": "--",
-//             "4. timestamp": "2018-04-26 15:59:57"
-//         }
-//     ]
-// };
+let fakeBatchFetchResponse = {
+    "Meta Data": {
+        "1. Information": "Batch Stock Market Quotes",
+        "2. Notes": "IEX Real-Time Price provided for free by IEX (https://iextrading.com/developer/).",
+        "3. Time Zone": "US/Eastern"
+    },
+    "Stock Quotes": [
+        {   "1. symbol": "MSFT",
+            "2. price": "94.6200",
+            "3. volume": "--",
+            "4. timestamp": "2018-04-26 16:53:10"
+        },
+        {   "1. symbol": "FB",
+            "2. price": "175.2700",
+            "3. volume": "--",
+            "4. timestamp": "2018-04-26 16:04:41"
+        },
+        {   "1. symbol": "AAPL",
+            "2. price": "164.2300",
+            "3. volume": "--",
+            "4. timestamp": "2018-04-26 15:59:57"
+        }
+    ]
+};
 
 let fakeUserData = {
   name: "Matt Dillon",
@@ -39,6 +39,10 @@ let alphavantageAPIKey = "S6ZCCR85WHEGSM8Z";
 
 // let testURL = "https://www.alphavantage.co/query?
 //                function=BATCH_STOCK_QUOTES&symbols=MSFT,FB,AAPL&apikey=demo";
+// https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=MSFT&apikey=demo
+// https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=demo
+// baseWeeklySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=";
+// baseDailySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
 
 class App extends Component {
   constructor (props) {
@@ -50,6 +54,8 @@ class App extends Component {
   }
 
   baseBatchFetchUrl = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=";
+  baseDailySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
+  baseWeeklySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=";
 
   buildBatchRequestURL = (symbols) => {
     let url =  `${this.baseBatchFetchUrl}${this.state.userData.symbols}&apikey=${alphavantageAPIKey}`;
@@ -57,59 +63,21 @@ class App extends Component {
     return url;
   };
 
-  fetchBatchData = (url) => {
-    fetch(url)
-      .then((resp) => resp.json())
-      .then((data) => {
-        console.log(data);
+  buildWeeklySeriesRequestURL = (symbol) => {
+    console.log("Symbol = " + symbol);
 
-        //return data;
-        let metaData = data["Meta Data"];
-        let sourceLabel = metaData["2. Notes"];
-        let batchData = data["Stock Quotes"]
-          .map((item) => {
-            let dateTime = item["4. timestamp"].trim().split(' ');
-            return (
-              {
-                symbol: item["1. symbol"],
-                currentValue:  item["2. price"],
-                timestamp: {date: dateTime[0], time: dateTime[1]}
-              }
-            )
-          }
-        ); // end map((item => {...}))
+    let url = `${this.baseWeeklySeriesFetchUrl}${symbol}&apikey=${alphavantageAPIKey}`;
 
-        console.log (batchData);
-
-        this.setState(
-          {
-            serverData: {
-              stockItems: batchData,
-              sourceLabel: sourceLabel
-            },
-
-            selectedItem: undefined
-          }
-        );
-    } ); // End .then((data) => {})
-
-  }
-
-  componentWillMount() {
-    this.setState({userData: fakeUserData});
+    return url;
   };
 
-  componentDidMount() {
-    let url = this.buildBatchRequestURL();
-    console.log(url);
-
-    this.fetchBatchData(url);
-
+  fetchBatchData = (url) => {
     // fetch(url)
     //   .then((resp) => resp.json())
     //   .then((data) => {
     //     console.log(data);
     //
+    //     //return data;
     //     let metaData = data["Meta Data"];
     //     let sourceLabel = metaData["2. Notes"];
     //     let batchData = data["Stock Quotes"]
@@ -138,6 +106,46 @@ class App extends Component {
     //       }
     //     );
     // } ); // End .then((data) => {})
+    let data = fakeBatchFetchResponse;
+    let metaData = data["Meta Data"];
+    let sourceLabel = metaData["2. Notes"];
+    let batchData = data["Stock Quotes"]
+      .map((item) => {
+        let dateTime = item["4. timestamp"].trim().split(' ');
+        return (
+          {
+            symbol: item["1. symbol"],
+            currentValue:  item["2. price"],
+            timestamp: {date: dateTime[0], time: dateTime[1]}
+          }
+        )
+      }
+    ); // end map((item => {...}))
+
+    console.log (batchData);
+
+    this.setState(
+      {
+        serverData: {
+          stockItems: batchData,
+          sourceLabel: sourceLabel
+        },
+
+        selectedItem: undefined
+      }
+    );
+  } // End fetchBatchData()
+
+
+  componentWillMount() {
+    this.setState({userData: fakeUserData});
+  };
+
+  componentDidMount() {
+    let url = this.buildBatchRequestURL();
+    // console.log(url);
+
+    this.fetchBatchData(url);
 
   } // End componentDidMount()
 
@@ -146,10 +154,41 @@ class App extends Component {
     this.setState({serverData: {stockItems: update}});
   }
 
-  handleSelectedItem = (targetItem) => {
+  getSelectedItem = (targetItem) => {
     console.log (targetItem);
 
     this.setState({selectedItem: targetItem});
+  }
+
+  fetchChartData = (symbol) => {
+    let url = this.buildWeeklySeriesRequestURL(symbol);
+    console.log(url);
+    
+    fetch(url)
+      .then( (resp) => resp.json())
+      .then( (data) => {
+        console.log(data);
+      }
+    ); // End .then( (data) => {
+  }
+
+  operateOnSelectedItem = (action) => {
+    // action can be "chart", "delete" or "edit"
+    if(this.state.selectedItem) {
+      if (action === "chart") {
+        // let url = this.buildWeeklySeriesRequestURL(this.state.selectedItem);
+        this.fetchChartData(this.state.selectedItem);
+      }
+      else if (action === "delete") {
+
+      }
+      else if (action === "edit") {
+
+      }
+    }
+    else {
+      console.log("No item selected");
+    }
   }
 
   render() {
@@ -159,9 +198,12 @@ class App extends Component {
           <h1 className="App-title">Reactive Stocks</h1>
         </header>
         <SearchBar getUserInput={ this.addNewStockSymbol }/>
-        <TickerItemList getUserSelection={ this.handleSelectedItem}
+
+        <TickerItemList getUserSelection={ this.getSelectedItem }
             items={ this.state.serverData && this.state.serverData.stockItems }/>
-        <SelectedItemOptions selected={this.state.selectedItem}  />
+
+        <SelectedItemOptions selected={this.state.selectedItem} handleOptions={this.operateOnSelectedItem} />
+
         { this.state.serverData && this.state.serverData.sourceLabel &&
             <SourceCite citation={ this.state.serverData.sourceLabel } /> }
       </div>
