@@ -4,6 +4,8 @@ import TickerItemList from "./components/TickerItemList";
 import SearchBar from "./components/SearchBar";
 import SourceCite from "./components/SourceCite";
 import SelectedItemOptions from "./components/SelectedItemOptions";
+let rawWeeklyData = require("./dev-data/weeklydata.js").data;
+
 
 let fakeBatchFetchResponse = {
     "Meta Data": {
@@ -136,30 +138,60 @@ class App extends Component {
     );
   } // End fetchBatchData()
 
-
+  //---------------------------------------------------------------------
   componentWillMount() {
     this.setState({userData: fakeUserData});
   };
-
+  //---------------------------------------------------------------------
   componentDidMount() {
     let url = this.buildBatchRequestURL();
     // console.log(url);
 
     this.fetchBatchData(url);
 
-  } // End componentDidMount()
+    //console.log(rawWeeklyData);
+    this.extractChartData(rawWeeklyData);
 
+  } // End componentDidMount()
+  //---------------------------------------------------------------------
   addNewStockSymbol = (item) => {
     let update = this.state.serverData.stockItems.concat([{symbol: item, currentValue: "?"}]);
     this.setState({serverData: {stockItems: update}});
   }
-
+  //---------------------------------------------------------------------
   getSelectedItem = (targetItem) => {
     console.log (targetItem);
 
     this.setState({selectedItem: targetItem});
   }
+  //---------------------------------------------------------------------
+  extractChartData = (rawData) => {
+    let dates   = [];
+    let highs   = [];
+    let lows    = [];
+    let closes  = [];
+    let volumes = [];
 
+    let wklyData = rawData["Weekly Time Series"];
+    let wklyKeys =  Object.keys(wklyData);
+    wklyKeys.forEach((key, indx) => {
+      let item = wklyData[key];
+      dates.push(key);
+      highs.push(item["2. high"]);
+      lows.push(item["3. low"]);
+      closes.push(item["4. close"]);
+      volumes.push(item["5. volume"]);
+      // console.log(key + " -> " + wklyData[key]);
+      // console.log(Object.keys(data[key]));
+    });
+
+    this.setState({chartData: {dates, highs, lows, closes, volumes}});
+
+    // console.log(dates);
+    // console.log(closes);
+    console.log(this.state.chartData);
+  }
+  //---------------------------------------------------------------------
   fetchChartData = (symbol) => {
     let url = this.buildWeeklySeriesRequestURL(symbol);
     console.log(url);
@@ -171,7 +203,7 @@ class App extends Component {
       }
     ); // End .then( (data) => {
   }
-
+  //---------------------------------------------------------------------
   operateOnSelectedItem = (action) => {
     // action can be "chart", "delete" or "edit"
     if(this.state.selectedItem) {
@@ -190,7 +222,7 @@ class App extends Component {
       console.log("No item selected");
     }
   }
-
+  //---------------------------------------------------------------------
   render() {
     return (
       <div className="App">
