@@ -1,0 +1,8 @@
+/* chart.css  styles for the chart component */
+
+
+.container {
+  padding: .25em .45em;
+  border: 1px solid orange;
+
+}

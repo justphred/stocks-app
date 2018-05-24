@@ -4,8 +4,9 @@ import TickerItemList from "./components/TickerItemList";
 import SearchBar from "./components/SearchBar";
 import SourceCite from "./components/SourceCite";
 import SelectedItemOptions from "./components/SelectedItemOptions";
-let rawWeeklyData = require("./dev-data/weeklydata.js").data;
+import ChartComponent from "./components/ChartComponent";
 
+let rawWeeklyData = require("./dev-data/weeklydata.js").data;
 
 let fakeBatchFetchResponse = {
     "Meta Data": {
@@ -168,7 +169,7 @@ class App extends Component {
   operateOnSelectedItem = (action) => {
     // action can be "chart", "delete" or "edit"
     if(this.state.selectedItem) {
-      if (action === "chart") {        
+      if (action === "chart") {
         this.fetchChartData(this.state.selectedItem);
       }
       else if (action === "delete") {
@@ -199,7 +200,9 @@ class App extends Component {
         { this.state.serverData && this.state.serverData.sourceLabel &&
             <SourceCite citation={ this.state.serverData.sourceLabel } /> }
         { this.state.chartData &&
-          <div>{`CHART DATA IS HERE ${this.state.chartData.dates}`}</div>}
+          <ChartComponent data={this.state.chartData}></ChartComponent>
+          // <div>{`CHART DATA IS HERE ${this.state.chartData.dates}`}</div>
+        }
       </div>
     );
   }
