@@ -18,8 +18,8 @@ class SelectedItemOptions extends React.Component {
         <div style={{display: "inline-block",
                       marginRight: ".4em"
                       }} >
-          <span className="selectedLabel">Selected Item:</span>
-          <span style={{color: "#e3e6ef"}}>
+          <span className="selectedItemLabel">Selected Item:</span>          
+          <span className="selectedItemText">
             {!this.props.selected ? "None" : this.props.selected}
           </span>
         </div>

@@ -52,6 +52,7 @@ class App extends Component {
 
     this.state = {
       // serverData: {}
+      // chartData: {}
     };
   }
 
@@ -74,40 +75,6 @@ class App extends Component {
   };
 
   fetchBatchData = (url) => {
-    // fetch(url)
-    //   .then((resp) => resp.json())
-    //   .then((data) => {
-    //     console.log(data);
-    //
-    //     //return data;
-    //     let metaData = data["Meta Data"];
-    //     let sourceLabel = metaData["2. Notes"];
-    //     let batchData = data["Stock Quotes"]
-    //       .map((item) => {
-    //         let dateTime = item["4. timestamp"].trim().split(' ');
-    //         return (
-    //           {
-    //             symbol: item["1. symbol"],
-    //             currentValue:  item["2. price"],
-    //             timestamp: {date: dateTime[0], time: dateTime[1]}
-    //           }
-    //         )
-    //       }
-    //     ); // end map((item => {...}))
-    //
-    //     console.log (batchData);
-    //
-    //     this.setState(
-    //       {
-    //         serverData: {
-    //           stockItems: batchData,
-    //           sourceLabel: sourceLabel
-    //         },
-    //
-    //         selectedItem: undefined
-    //       }
-    //     );
-    // } ); // End .then((data) => {})
     let data = fakeBatchFetchResponse;
     let metaData = data["Meta Data"];
     let sourceLabel = metaData["2. Notes"];
@@ -149,9 +116,6 @@ class App extends Component {
 
     this.fetchBatchData(url);
 
-    //console.log(rawWeeklyData);
-    this.extractChartData(rawWeeklyData);
-
   } // End componentDidMount()
   //---------------------------------------------------------------------
   addNewStockSymbol = (item) => {
@@ -181,34 +145,30 @@ class App extends Component {
       lows.push(item["3. low"]);
       closes.push(item["4. close"]);
       volumes.push(item["5. volume"]);
-      // console.log(key + " -> " + wklyData[key]);
-      // console.log(Object.keys(data[key]));
     });
 
-    this.setState({chartData: {dates, highs, lows, closes, volumes}});
-
-    // console.log(dates);
-    // console.log(closes);
-    console.log(this.state.chartData);
+    this.setState({chartData: {dates, highs, lows, closes, volumes} } );
   }
   //---------------------------------------------------------------------
   fetchChartData = (symbol) => {
     let url = this.buildWeeklySeriesRequestURL(symbol);
     console.log(url);
 
-    fetch(url)
-      .then( (resp) => resp.json())
-      .then( (data) => {
-        console.log(data);
-      }
-    ); // End .then( (data) => {
+    // fetch(url)
+    //   .then( (resp) => resp.json())
+    //   .then( (data) => {
+    //     console.log(data);
+    //     this.extractChartData(data);
+    //   }
+    // ); // End .then( (data) => {
+
+    this.extractChartData(rawWeeklyData);
   }
   //---------------------------------------------------------------------
   operateOnSelectedItem = (action) => {
     // action can be "chart", "delete" or "edit"
     if(this.state.selectedItem) {
-      if (action === "chart") {
-        // let url = this.buildWeeklySeriesRequestURL(this.state.selectedItem);
+      if (action === "chart") {        
         this.fetchChartData(this.state.selectedItem);
       }
       else if (action === "delete") {
@@ -238,6 +198,8 @@ class App extends Component {
 
         { this.state.serverData && this.state.serverData.sourceLabel &&
             <SourceCite citation={ this.state.serverData.sourceLabel } /> }
+        { this.state.chartData &&
+          <div>{`CHART DATA IS HERE ${this.state.chartData.dates}`}</div>}
       </div>
     );
   }

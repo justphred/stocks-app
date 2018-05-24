@@ -1,13 +1,18 @@
 
-.selectedLabel {
+.selectedItemLabel {
   padding-right: .25em;
   color: #c5cce2
 }
 .btnDisabled {
   cursor: not-allowed;
   pointer-events: none;
-  color: #c0c0c0;
+  color: #b0a0a0;
 }
 .btnOptions {
   color: #253c70;
+}
+.selectedItemText {
+  color: #e3e6ef;
+  background-color: #3E4D70;
+  padding:".2em .4em";
 }
