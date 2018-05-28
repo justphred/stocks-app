@@ -1,4 +1,9 @@
 
+.si-container {
+  margin-top: .5em;
+  margin-bottom: .5em;
+  padding: .2em;
+}
 .selectedItemLabel {
   padding-right: .25em;
   color: #c5cce2
@@ -14,5 +19,5 @@
 .selectedItemText {
   color: #e3e6ef;
   background-color: #3E4D70;
-  padding:".2em .4em";
+  padding: .2em .4em;
 }

@@ -33,11 +33,10 @@ import {Line} from "react-chartjs-2";
 class ChartComponent extends React.Component {
 
    data = {
-    // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    labels: this.props.dates,
+    labels: this.props.data.dates,
     datasets: [
       {
-        label: 'Weekly Closing Values',
+        label: `${this.props.chartType} Values - ${this.props.symbol}`,
         fill: false,
         lineTension: 0.1,
         backgroundColor: 'rgba(75,192,192,0.4)',
@@ -55,12 +54,10 @@ class ChartComponent extends React.Component {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        // data: [65, 59, 80, 81, 56, 55, 40]
         data: this.props.data.closings
       }
     ]
   };
-
 
   render () {
     return (
@@ -69,8 +66,7 @@ class ChartComponent extends React.Component {
         <Line data={this.data}></Line>
       </div>
     );
-
-  } // End render()
+  }
 };
 
 

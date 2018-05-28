@@ -42,7 +42,9 @@ let alphavantageAPIKey = "S6ZCCR85WHEGSM8Z";
 
 // let testURL = "https://www.alphavantage.co/query?
 //                function=BATCH_STOCK_QUOTES&symbols=MSFT,FB,AAPL&apikey=demo";
+//https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=MSFT,FB,AAPL&apikey=S6ZCCR85WHEGSM8Z
 // https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=MSFT&apikey=demo
+//https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=MSFT&apikey=S6ZCCR85WHEGSM8Z
 // https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=demo
 // baseWeeklySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=";
 // baseDailySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
@@ -75,11 +77,10 @@ class App extends Component {
     return url;
   };
 
-  fetchBatchData = (url) => {
-    let data = fakeBatchFetchResponse;
-    let metaData = data["Meta Data"];
+  extractBatchData = (apiData) => {
+    let metaData = apiData["Meta Data"];
     let sourceLabel = metaData["2. Notes"];
-    let batchData = data["Stock Quotes"]
+    let batchData = apiData["Stock Quotes"]
       .map((item) => {
         let dateTime = item["4. timestamp"].trim().split(' ');
         return (
@@ -104,6 +105,21 @@ class App extends Component {
         selectedItem: undefined
       }
     );
+  }
+
+  //---------------------------------------------------------------------
+  fetchBatchData = (url) => {
+    fetch(url)
+      .then( (resp) => resp.json())
+      .then( (data) => {
+        console.log(data);
+        this.extractBatchData(data);
+      }
+    ); // End .then( (data) => {
+
+    // let data = fakeBatchFetchResponse;
+    // this.extractBatchData(data);
+
   } // End fetchBatchData()
 
   //---------------------------------------------------------------------
@@ -125,8 +141,7 @@ class App extends Component {
   }
   //---------------------------------------------------------------------
   getSelectedItem = (targetItem) => {
-    console.log (targetItem);
-
+    console.log ("getSelectedItem():" + targetItem);
     this.setState({selectedItem: targetItem});
   }
   //---------------------------------------------------------------------
@@ -134,46 +149,82 @@ class App extends Component {
     let dates   = [];
     let highs   = [];
     let lows    = [];
-    let closes  = [];
+    let closings  = [];
     let volumes = [];
 
-    let wklyData = rawData["Weekly Time Series"];
-    let wklyKeys =  Object.keys(wklyData);
-    wklyKeys.forEach((key, indx) => {
-      let item = wklyData[key];
-      dates.push(key);
-      highs.push(item["2. high"]);
-      lows.push(item["3. low"]);
-      closes.push(item["4. close"]);
-      volumes.push(item["5. volume"]);
-    });
+    let errorMsg = rawData["Error Message"];
 
-    this.setState({chartData: {dates, highs, lows, closes, volumes} } );
+    if(!errorMsg) {
+      let wklyData = rawData["Weekly Time Series"];
+      // The key for a weekly data object has the form "2018-04-26"
+      let wklyKeys =  Object.keys(wklyData);
+      // wklyKeys.forEach((key, indx) => {
+      wklyKeys.some((key, indx) => {
+        let dateArray = key.trim().split("-");
+        let yrChars = dateArray[0];
+        let yr10s = [yrChars[2], yrChars[3]];
+        let betterDateArray = [dateArray[1], dateArray[2], yr10s.join("")];
+        let betterDateStr = betterDateArray.join("/");
+        let item = wklyData[key];
+        dates.push(betterDateStr);
+        highs.push(item["2. high"]);
+        lows.push(item["3. low"]);
+        closings.push(item["4. close"]);
+        volumes.push(item["5. volume"]);
+
+        // When the function invoked by array.some() (the one we're executing
+        // here) returns a truthy value, array.some() stops processing the array
+        // its operating on.  So, this statment stops the accumulation of date
+        // from the data that was returned by the server.
+        return indx >= 25;
+      });
+
+      this.setState(
+        {
+          chartData: {dates, highs, lows, closings, volumes}
+        } );
+    } // End if(!errorMsg) {}
+    else {
+      // There was an error fetching data for the target symbol.
+      // Assume that the symbol was un recognized.
+    }
+
   }
   //---------------------------------------------------------------------
   fetchChartData = (symbol) => {
     let url = this.buildWeeklySeriesRequestURL(symbol);
     console.log(url);
 
-    // fetch(url)
-    //   .then( (resp) => resp.json())
-    //   .then( (data) => {
-    //     console.log(data);
-    //     this.extractChartData(data);
-    //   }
-    // ); // End .then( (data) => {
+    fetch(url)
+      .then( (resp) => resp.json())
+      .then( (data) => {
+        console.log(data);
+        this.extractChartData(data);
+      }
+    ); // End .then( (data) => {
 
-    this.extractChartData(rawWeeklyData);
+    // this.extractChartData(rawWeeklyData);
   }
   //---------------------------------------------------------------------
   operateOnSelectedItem = (action) => {
     // action can be "chart", "delete" or "edit"
     if(this.state.selectedItem) {
       if (action === "chart") {
+        // If there is alread a chart displayed, let's cause it to be removed.
+        if(this.state.chartData) {
+          this.setState({chartData : undefined});
+        }
+
         this.fetchChartData(this.state.selectedItem);
       }
       else if (action === "delete") {
+        let newData = this.state.serverData.stockItems.filter( (item) => {
+          return item.symbol !== this.state.selectedItem
+        });
 
+        let serverData2 = this.state.serverData;
+        serverData2.stockItems = newData;
+        this.setState({serverData: serverData2, selectedItem: undefined});
       }
       else if (action === "edit") {
 
@@ -188,7 +239,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">Reactive Stocks</h1>
+          <h1 className="App-title">Reactive Stocks Status</h1>
         </header>
         <SearchBar getUserInput={ this.addNewStockSymbol }/>
 
@@ -197,12 +248,14 @@ class App extends Component {
 
         <SelectedItemOptions selected={this.state.selectedItem} handleOptions={this.operateOnSelectedItem} />
 
+        { this.state.chartData &&
+          <ChartComponent data={this.state.chartData}
+            symbol={this.state.selectedItem}
+            chartType={"Weekly Closings"}
+            ></ChartComponent> }
+
         { this.state.serverData && this.state.serverData.sourceLabel &&
             <SourceCite citation={ this.state.serverData.sourceLabel } /> }
-        { this.state.chartData &&
-          <ChartComponent data={this.state.chartData}></ChartComponent>
-          // <div>{`CHART DATA IS HERE ${this.state.chartData.dates}`}</div>
-        }
       </div>
     );
   }

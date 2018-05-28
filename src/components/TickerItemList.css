@@ -1,0 +1,10 @@
+.til-container {
+  display: inline-block;
+  padding: .1em;
+  border: 1px solid #778096;
+  border-radius: .4em;
+}
+
+.til-container ul {
+  padding: 0;
+}

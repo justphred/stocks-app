@@ -14,11 +14,11 @@ class SelectedItemOptions extends React.Component {
 
   render() {
     return (
-      <div style={{ marginTop: ".2em", padding: ".2em"}}>
+      <div className="si-container">
         <div style={{display: "inline-block",
                       marginRight: ".4em"
                       }} >
-          <span className="selectedItemLabel">Selected Item:</span>          
+          <span className="selectedItemLabel">Selected Item:</span>
           <span className="selectedItemText">
             {!this.props.selected ? "None" : this.props.selected}
           </span>

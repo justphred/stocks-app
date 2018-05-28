@@ -1,17 +1,8 @@
 import React from "react";
 import TickerItem from "./TickerItem";
+import "./TickerItemList.css";
 
-class TickerItemList extends React.Component {
-  containerStyles =  {
-     display: "inline-block",
-     padding: ".1em",
-     border: "1px solid #778096",
-     "borderRadius": ".4em"
-  };
-
-  // itemClicked = (ev) => {
-  //   console.log(ev);
-  // }
+class TickerItemList extends React.Component {  
 
   render () {
     let tickerItems = [];
@@ -28,7 +19,7 @@ class TickerItemList extends React.Component {
     }
 
     return (
-      <div style={this.containerStyles}>
+      <div className="til-container">
         <ul>
           {tickerItems}
         </ul>
