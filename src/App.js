@@ -136,8 +136,11 @@ class App extends Component {
   } // End componentDidMount()
   //---------------------------------------------------------------------
   addNewStockSymbol = (item) => {
-    let update = this.state.serverData.stockItems.concat([{symbol: item, currentValue: "?"}]);
-    this.setState({serverData: {stockItems: update}});
+    // let update = this.state.serverData.stockItems.concat([{symbol: item, currentValue: "?"}]);
+    // this.setState({serverData: {stockItems: update}});
+    let update = this.state.userData;
+    update.symbols.push(item);
+    this.setState({userData: update});
   }
   //---------------------------------------------------------------------
   getSelectedItem = (targetItem) => {
@@ -208,9 +211,12 @@ class App extends Component {
   //---------------------------------------------------------------------
   operateOnSelectedItem = (action) => {
     // action can be "chart", "delete" or "edit"
+
+    // We won't do anything here if the user hasn't actually selected
+    // an item to do something to.
     if(this.state.selectedItem) {
       if (action === "chart") {
-        // If there is alread a chart displayed, let's cause it to be removed.
+        // If there is already a chart displayed, let's cause it to be removed.
         if(this.state.chartData) {
           this.setState({chartData : undefined});
         }
@@ -218,13 +224,24 @@ class App extends Component {
         this.fetchChartData(this.state.selectedItem);
       }
       else if (action === "delete") {
-        let newData = this.state.serverData.stockItems.filter( (item) => {
+        // Update the serverData list of stock symbols
+        let newStockItems = this.state.serverData.stockItems.filter( (item) => {
           return item.symbol !== this.state.selectedItem
         });
-
         let serverData2 = this.state.serverData;
-        serverData2.stockItems = newData;
-        this.setState({serverData: serverData2, selectedItem: undefined});
+        serverData2.stockItems = newStockItems;
+
+        // Update the user's list of stock symbols
+        let newUserSymbols = this.state.userData.symbols.filter( (symb) => {
+          return symb !== this.state.selectedItem;
+        });
+        let userData2 = this.state.userData;
+        userData2.symbols = newUserSymbols;
+
+        this.setState({
+          serverData: serverData2,
+          userData: userData2,
+          selectedItem: undefined});
       }
       else if (action === "edit") {
 
