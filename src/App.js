@@ -40,6 +40,27 @@ let fakeUserData = {
 
 let alphavantageAPIKey = "S6ZCCR85WHEGSM8Z";
 
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+let api_fetchChartData = (url) => {
+  // let url = this.buildWeeklySeriesRequestURL(symbol);
+  console.log(url);
+
+  //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+  return new Promise((resolve, reject) => {
+    fetch(url)
+      .then( (resp) => resp.json())
+      .then( (data) => {
+        console.log("Promised data: ", data);
+        // this.extractChartData(data);
+        resolve(data);
+      }
+    ); // End .then( (data) => {
+  });
+
+  // this.extractChartData(rawWeeklyData);
+};
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
 // let testURL = "https://www.alphavantage.co/query?
 //                function=BATCH_STOCK_QUOTES&symbols=MSFT,FB,AAPL&apikey=demo";
 //https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=MSFT,FB,AAPL&apikey=S6ZCCR85WHEGSM8Z
@@ -221,7 +242,11 @@ class App extends Component {
           this.setState({chartData : undefined});
         }
 
-        this.fetchChartData(this.state.selectedItem);
+        // this.fetchChartData(this.state.selectedItem);
+        let myUrl = this.buildWeeklySeriesRequestURL(this.state.selectedItem);
+        api_fetchChartData(myUrl).then( (data) => {
+          this.extractChartData(data);
+        });
       }
       else if (action === "delete") {
         // Update the serverData list of stock symbols
