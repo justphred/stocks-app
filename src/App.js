@@ -5,62 +5,11 @@ import SearchBar from "./components/SearchBar";
 import SourceCite from "./components/SourceCite";
 import SelectedItemOptions from "./components/SelectedItemOptions";
 import ChartComponent from "./components/ChartComponent";
+import AV_api from "./api/api_alphavantage";
 
 let rawWeeklyData = require("./dev-data/weeklydata.js").data;
 
-let fakeBatchFetchResponse = {
-    "Meta Data": {
-        "1. Information": "Batch Stock Market Quotes",
-        "2. Notes": "IEX Real-Time Price provided for free by IEX (https://iextrading.com/developer/).",
-        "3. Time Zone": "US/Eastern"
-    },
-    "Stock Quotes": [
-        {   "1. symbol": "MSFT",
-            "2. price": "94.6200",
-            "3. volume": "--",
-            "4. timestamp": "2018-04-26 16:53:10"
-        },
-        {   "1. symbol": "FB",
-            "2. price": "175.2700",
-            "3. volume": "--",
-            "4. timestamp": "2018-04-26 16:04:41"
-        },
-        {   "1. symbol": "AAPL",
-            "2. price": "164.2300",
-            "3. volume": "--",
-            "4. timestamp": "2018-04-26 15:59:57"
-        }
-    ]
-};
-
-let fakeUserData = {
-  name: "Matt Dillon",
-  symbols: ["MSFT", "FB", "AAPL"]
-};
-
-let alphavantageAPIKey = "S6ZCCR85WHEGSM8Z";
-
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-let api_fetchChartData = (url) => {
-  // let url = this.buildWeeklySeriesRequestURL(symbol);
-  console.log(url);
-
-  //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
-  return new Promise((resolve, reject) => {
-    fetch(url)
-      .then( (resp) => resp.json())
-      .then( (data) => {
-        console.log("Promised data: ", data);
-        // this.extractChartData(data);
-        resolve(data);
-      }
-    ); // End .then( (data) => {
-  });
-
-  // this.extractChartData(rawWeeklyData);
-};
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
+//==============================================================================
 // let testURL = "https://www.alphavantage.co/query?
 //                function=BATCH_STOCK_QUOTES&symbols=MSFT,FB,AAPL&apikey=demo";
 //https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=MSFT,FB,AAPL&apikey=S6ZCCR85WHEGSM8Z
@@ -69,6 +18,55 @@ let api_fetchChartData = (url) => {
 // https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=demo
 // baseWeeklySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=";
 // baseDailySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
+//==============================================================================
+
+let fakeUserData = {
+  name: "Matt Dillon",
+  symbols: ["MSFT", "FB", "AAPL"]
+};
+
+// let alphavantageAPIKey = "S6ZCCR85WHEGSM8Z";
+//
+// //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+// // $-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$
+// let api_fetchChartData = (url) => {
+//   console.log(url);
+//
+//   return new Promise( (resolve, reject) => {
+//     fetch(url)
+//       .then( (resp) => resp.json())
+//       .then( (data) => {
+//         console.log("fetchChartData(): ", data);
+//         // this.extractChartData(data);
+//         resolve(data);
+//       }
+//     ); // End .then( (data) => {
+//   });
+//
+//   // this.extractChartData(rawWeeklyData);
+// };
+// // $-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$
+//
+// // $-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$
+// let api_fetchBatchData = (url) => {
+//
+//   return new Promise( (resolve, reject) => {
+//     fetch(url)
+//       .then( (resp) => resp.json())
+//       .then( (data) => {
+//         // this.extractBatchData(data);
+//         console.log("fetchBatchData(): ", data);
+//         resolve(data);
+//       }
+//     ); // End .then( (data) => {
+//
+//     // let data = fakeBatchFetchResponse;
+//     // this.extractBatchData(data);
+//   });
+//
+// } // End api_fetchBatchData()
+// // $-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$
+
 
 class App extends Component {
   constructor (props) {
@@ -80,24 +78,25 @@ class App extends Component {
     };
   }
 
-  baseBatchFetchUrl = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=";
-  baseDailySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
-  baseWeeklySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=";
+  // baseBatchFetchUrl = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=";
+  // baseDailySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
+  // baseWeeklySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=";
+  //
+  // buildBatchRequestURL = (symbols) => {
+  //   let url =  `${this.baseBatchFetchUrl}${this.state.userData.symbols}&apikey=${alphavantageAPIKey}`;
+  //
+  //   return url;
+  // };
+  //
+  // buildWeeklySeriesRequestURL = (symbol) => {
+  //   console.log("Symbol = " + symbol);
+  //
+  //   let url = `${this.baseWeeklySeriesFetchUrl}${symbol}&apikey=${alphavantageAPIKey}`;
+  //
+  //   return url;
+  // };
 
-  buildBatchRequestURL = (symbols) => {
-    let url =  `${this.baseBatchFetchUrl}${this.state.userData.symbols}&apikey=${alphavantageAPIKey}`;
-
-    return url;
-  };
-
-  buildWeeklySeriesRequestURL = (symbol) => {
-    console.log("Symbol = " + symbol);
-
-    let url = `${this.baseWeeklySeriesFetchUrl}${symbol}&apikey=${alphavantageAPIKey}`;
-
-    return url;
-  };
-
+  // ----------------------------------------------------------------------------
   extractBatchData = (apiData) => {
     let metaData = apiData["Meta Data"];
     let sourceLabel = metaData["2. Notes"];
@@ -129,45 +128,34 @@ class App extends Component {
   }
 
   //---------------------------------------------------------------------
-  fetchBatchData = (url) => {
-    fetch(url)
-      .then( (resp) => resp.json())
-      .then( (data) => {
-        console.log(data);
-        this.extractBatchData(data);
-      }
-    ); // End .then( (data) => {
-
-    // let data = fakeBatchFetchResponse;
-    // this.extractBatchData(data);
-
-  } // End fetchBatchData()
-
-  //---------------------------------------------------------------------
   componentWillMount() {
     this.setState({userData: fakeUserData});
   };
+
   //---------------------------------------------------------------------
   componentDidMount() {
-    let url = this.buildBatchRequestURL();
-    // console.log(url);
+    // let url = this.buildBatchRequestURL();
 
-    this.fetchBatchData(url);
+    // this.state.userData.symbols
+    AV_api.fetchBatchData(this.state.userData.symbols).then((data) => {
+      this.extractBatchData(data);
+    });
 
   } // End componentDidMount()
+
   //---------------------------------------------------------------------
   addNewStockSymbol = (item) => {
-    // let update = this.state.serverData.stockItems.concat([{symbol: item, currentValue: "?"}]);
-    // this.setState({serverData: {stockItems: update}});
     let update = this.state.userData;
     update.symbols.push(item);
     this.setState({userData: update});
   }
+
   //---------------------------------------------------------------------
   getSelectedItem = (targetItem) => {
     console.log ("getSelectedItem():" + targetItem);
     this.setState({selectedItem: targetItem});
   }
+
   //---------------------------------------------------------------------
   extractChartData = (rawData) => {
     let dates   = [];
@@ -214,21 +202,7 @@ class App extends Component {
     }
 
   }
-  //---------------------------------------------------------------------
-  fetchChartData = (symbol) => {
-    let url = this.buildWeeklySeriesRequestURL(symbol);
-    console.log(url);
 
-    fetch(url)
-      .then( (resp) => resp.json())
-      .then( (data) => {
-        console.log(data);
-        this.extractChartData(data);
-      }
-    ); // End .then( (data) => {
-
-    // this.extractChartData(rawWeeklyData);
-  }
   //---------------------------------------------------------------------
   operateOnSelectedItem = (action) => {
     // action can be "chart", "delete" or "edit"
@@ -242,9 +216,9 @@ class App extends Component {
           this.setState({chartData : undefined});
         }
 
-        // this.fetchChartData(this.state.selectedItem);
-        let myUrl = this.buildWeeklySeriesRequestURL(this.state.selectedItem);
-        api_fetchChartData(myUrl).then( (data) => {
+        // let myUrl = this.buildWeeklySeriesRequestURL(this.state.selectedItem);
+
+        AV_api.fetchChartData(this.state.selectedItem).then( (data) => {
           this.extractChartData(data);
         });
       }
@@ -275,7 +249,8 @@ class App extends Component {
     else {
       console.log("No item selected");
     }
-  }
+  } // End operateOnSelectedItem = (action) => {}
+
   //---------------------------------------------------------------------
   render() {
     return (
@@ -305,4 +280,4 @@ class App extends Component {
 
 export default App;
 
-// bottomline
+// bottomline ------------------------------------------------------------
