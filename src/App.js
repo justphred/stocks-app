@@ -7,7 +7,6 @@ import SelectedItemOptions from "./components/SelectedItemOptions";
 import ChartComponent from "./components/ChartComponent";
 import AV_api from "./api/api_alphavantage";
 
-let rawWeeklyData = require("./dev-data/weeklydata.js").data;
 
 //==============================================================================
 // let testURL = "https://www.alphavantage.co/query?
@@ -25,48 +24,6 @@ let fakeUserData = {
   symbols: ["MSFT", "FB", "AAPL"]
 };
 
-// let alphavantageAPIKey = "S6ZCCR85WHEGSM8Z";
-//
-// //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
-// // $-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$
-// let api_fetchChartData = (url) => {
-//   console.log(url);
-//
-//   return new Promise( (resolve, reject) => {
-//     fetch(url)
-//       .then( (resp) => resp.json())
-//       .then( (data) => {
-//         console.log("fetchChartData(): ", data);
-//         // this.extractChartData(data);
-//         resolve(data);
-//       }
-//     ); // End .then( (data) => {
-//   });
-//
-//   // this.extractChartData(rawWeeklyData);
-// };
-// // $-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$
-//
-// // $-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$
-// let api_fetchBatchData = (url) => {
-//
-//   return new Promise( (resolve, reject) => {
-//     fetch(url)
-//       .then( (resp) => resp.json())
-//       .then( (data) => {
-//         // this.extractBatchData(data);
-//         console.log("fetchBatchData(): ", data);
-//         resolve(data);
-//       }
-//     ); // End .then( (data) => {
-//
-//     // let data = fakeBatchFetchResponse;
-//     // this.extractBatchData(data);
-//   });
-//
-// } // End api_fetchBatchData()
-// // $-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$-$
-
 
 class App extends Component {
   constructor (props) {
@@ -77,24 +34,6 @@ class App extends Component {
       // chartData: {}
     };
   }
-
-  // baseBatchFetchUrl = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=";
-  // baseDailySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
-  // baseWeeklySeriesFetchUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=";
-  //
-  // buildBatchRequestURL = (symbols) => {
-  //   let url =  `${this.baseBatchFetchUrl}${this.state.userData.symbols}&apikey=${alphavantageAPIKey}`;
-  //
-  //   return url;
-  // };
-  //
-  // buildWeeklySeriesRequestURL = (symbol) => {
-  //   console.log("Symbol = " + symbol);
-  //
-  //   let url = `${this.baseWeeklySeriesFetchUrl}${symbol}&apikey=${alphavantageAPIKey}`;
-  //
-  //   return url;
-  // };
 
   // ----------------------------------------------------------------------------
   extractBatchData = (apiData) => {
@@ -115,16 +54,10 @@ class App extends Component {
 
     console.log (batchData);
 
-    this.setState(
-      {
-        serverData: {
-          stockItems: batchData,
-          sourceLabel: sourceLabel
-        },
-
-        selectedItem: undefined
-      }
-    );
+    return({
+      stockItems: batchData,
+      sourceLabel: sourceLabel
+    });
   }
 
   //---------------------------------------------------------------------
@@ -136,18 +69,59 @@ class App extends Component {
   componentDidMount() {
     // let url = this.buildBatchRequestURL();
 
-    // this.state.userData.symbols
     AV_api.fetchBatchData(this.state.userData.symbols).then((data) => {
-      this.extractBatchData(data);
-    });
+      let extractedData = this.extractBatchData(data);
+
+      if(extractedData.stockItems && (extractedData.stockItems.length) > 0) {
+        this.setState(
+          {
+            serverData: extractedData,
+            selectedItem: undefined
+          }
+        );
+      }
+    }); // End AV_api.fetchBatchData(this.state.userData.symbols).then((data) => {
 
   } // End componentDidMount()
 
   //---------------------------------------------------------------------
   addNewStockSymbol = (item) => {
-    let update = this.state.userData;
-    update.symbols.push(item);
-    this.setState({userData: update});
+
+    // Make sure that the user didn't just try to "add" a stock/symbol
+    // that's already in the list.
+    let selectedsCopy = this.state.serverData.stockItems.filter( (item) => {
+      return item.symbol === this.state.selectedItem;
+    });
+
+    if(selectedsCopy.length === 0) {
+      // A new symbol has been entered by user
+
+      // Make sure that the user has entered a valid symbol before we add it.
+      AV_api.fetchBatchData(item).then((data) => {
+        let extractedData = this.extractBatchData(data);
+
+        if(extractedData.stockItems && (extractedData.stockItems.length) > 0) {
+          let tempStockItems =
+            this.state.serverData.stockItems.concat(extractedData.stockItems);
+          let newServerData = Object.assign({}, this.state.serverData);
+          newServerData.stockItems = tempStockItems;
+
+          let newUserData = this.state.userData;
+          newUserData.symbols.push(item);          
+          //this.setState({userData: newUserData});
+
+          this.setState(
+            { serverData: newServerData,
+              userData: newUserData
+            }
+          );
+        }
+      }); // End AV_api.fetchBatchData(this.state.userData.symbols).then((data) => {
+
+    } else {
+      // The user just tried to add another copy of a stock/symbol that exists already
+    }
+
   }
 
   //---------------------------------------------------------------------
