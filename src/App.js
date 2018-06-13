@@ -24,7 +24,27 @@ let fakeUserData = {
   symbols: ["MSFT", "FB", "AAPL"]
 };
 
+// ----------------------------------------------------------------------------
+// let reformatRawBatchTimestamp = (dateStr) => {
+//   let dateTime = dateStr.split(' ');    // ["2018-04-26", "15:59:57"]
+//   let dateArray = dateTime[0].split('-'); // ['2018', "04", "26"]
+//   let yrArray = dateArray[0].split('');   // ['2','0','1','8']
+//   let yr10s = [yrArray[2],yrArray[3]];    // ['1','8']
+//   let betterDateStr = [dateArray[1], dateArray[2], yr10s.join('')].join('/'); // "04/26/18"
+//   let betterTimestamp = [dateTime[1], betterDateStr].join(' '); // "15:59:57 04/26/18"
+//   // console.log (betterTimestamp);
+//   return betterTimestamp;
+// }
+let reformatRawBatchDateStr = (dateStr) => {
+  let dateArray = dateStr.split('-'); // ['2018', "04", "26"]
+  let yrArray = dateArray[0].split('');   // ['2','0','1','8']
+  let yr10s = [yrArray[2],yrArray[3]];    // ['1','8']
+  let betterDateStr = [dateArray[1], dateArray[2], yr10s.join('')].join('/'); // "04/26/18"
 
+  return betterDateStr;
+}
+
+// =============================================================================
 class App extends Component {
   constructor (props) {
     super(props);
@@ -46,7 +66,7 @@ class App extends Component {
           {
             symbol: item["1. symbol"],
             currentValue:  item["2. price"],
-            timestamp: {date: dateTime[0], time: dateTime[1]}
+            timestamp: {date: reformatRawBatchDateStr(dateTime[0]), time: dateTime[1]}
           }
         )
       }
@@ -107,7 +127,7 @@ class App extends Component {
           newServerData.stockItems = tempStockItems;
 
           let newUserData = this.state.userData;
-          newUserData.symbols.push(item);          
+          newUserData.symbols.push(item);
           //this.setState({userData: newUserData});
 
           this.setState(
@@ -122,7 +142,7 @@ class App extends Component {
       // The user just tried to add another copy of a stock/symbol that exists already
     }
 
-  }
+  } // End addNewStockSymbol()
 
   //---------------------------------------------------------------------
   getSelectedItem = (targetItem) => {
@@ -160,7 +180,7 @@ class App extends Component {
 
         // When the function invoked by array.some() (the one we're executing
         // here) returns a truthy value, array.some() stops processing the array
-        // its operating on.  So, this statment stops the accumulation of date
+        // its operating on.  So, this statment stops the accumulation of data
         // from the data that was returned by the server.
         return indx >= 25;
       });
@@ -175,7 +195,7 @@ class App extends Component {
       // Assume that the symbol was un recognized.
     }
 
-  }
+  } // End extractChartData()
 
   //---------------------------------------------------------------------
   operateOnSelectedItem = (action) => {

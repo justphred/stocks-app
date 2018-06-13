@@ -2,7 +2,7 @@ import React from "react";
 import TickerItem from "./TickerItem";
 import "./TickerItemList.css";
 
-class TickerItemList extends React.Component {  
+class TickerItemList extends React.Component {
 
   render () {
     let tickerItems = [];
@@ -13,6 +13,7 @@ class TickerItemList extends React.Component {
           <TickerItem key={item.symbol}
                       symbol={item.symbol}
                       value={item.currentValue}
+                      timestamp={item.timestamp}
                       getUserSelection={this.props.getUserSelection}/>
         );
       } );
