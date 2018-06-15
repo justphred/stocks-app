@@ -30,3 +30,5 @@ class TickerItemList extends React.Component {
 } // End class TickerItemList
 
 export default TickerItemList;
+
+// bottomline

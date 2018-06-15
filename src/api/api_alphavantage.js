@@ -78,16 +78,16 @@ let fetchBatchData = (symbols) => {
   console.log("Batch data url: ", url);
 
   return new Promise( (resolve, reject) => {
-    fetch(url)
-      .then( (resp) => resp.json())
-      .then( (data) => {
-        // this.extractBatchData(data);
-        console.log("fetchBatchData(): ", data);
-        resolve(data);
-      }
-    ); // End .then( (data) => {
+  //   fetch(url)
+  //     .then( (resp) => resp.json())
+  //     .then( (data) => {
+  //       // this.extractBatchData(data);
+  //       console.log("fetchBatchData(): ", data);
+  //       resolve(data);
+  //     }
+  //   ); // End .then( (data) => {
 
-    // resolve(fakeBatchFetchResponse);
+    resolve(fakeBatchFetchResponse);
   });
 
 } // End api_fetchBatchData()

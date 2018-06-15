@@ -5,6 +5,7 @@ import SearchBar from "./components/SearchBar";
 import SourceCite from "./components/SourceCite";
 import SelectedItemOptions from "./components/SelectedItemOptions";
 import ChartComponent from "./components/ChartComponent";
+import MessagePane from "./components/MessagePane";
 import AV_api from "./api/api_alphavantage";
 
 
@@ -110,8 +111,11 @@ class App extends Component {
     // Make sure that the user didn't just try to "add" a stock/symbol
     // that's already in the list.
     let selectedsCopy = this.state.serverData.stockItems.filter( (item) => {
+      // return item.symbol === this.state.selectedItem;
       return item.symbol === this.state.selectedItem;
     });
+
+    console.log("New item: " + selectedsCopy);
 
     if(selectedsCopy.length === 0) {
       // A new symbol has been entered by user
@@ -140,14 +144,19 @@ class App extends Component {
 
     } else {
       // The user just tried to add another copy of a stock/symbol that exists already
+      this.setState({statusMessage: `${item} is already in your list`})
     }
 
   } // End addNewStockSymbol()
 
   //---------------------------------------------------------------------
-  getSelectedItem = (targetItem) => {
-    console.log ("getSelectedItem():" + targetItem);
-    this.setState({selectedItem: targetItem});
+  getUserSelection = (targetItem) => {
+    console.log ("getUserSelection():" + targetItem);
+    // this.setState({selectedItem: targetItem});
+    this.setState({
+      selectedItem: targetItem,
+      statusMessage: `${targetItem} Selected`
+    });
   }
 
   //---------------------------------------------------------------------
@@ -254,15 +263,19 @@ class App extends Component {
         </header>
         <SearchBar getUserInput={ this.addNewStockSymbol }/>
 
-        <TickerItemList getUserSelection={ this.getSelectedItem }
+        <TickerItemList getUserSelection={ this.getUserSelection }
             items={ this.state.serverData && this.state.serverData.stockItems }/>
 
         <SelectedItemOptions selected={this.state.selectedItem} handleOptions={this.operateOnSelectedItem} />
 
+        { this.state.statusMessage &&
+          <MessagePane message={this.state.statusMessage}></MessagePane>
+        }
+
         { this.state.chartData &&
           <ChartComponent data={this.state.chartData}
             symbol={this.state.selectedItem}
-            chartType={"Weekly Closings"}
+            chartType={"Weekly Closing"}
             ></ChartComponent> }
 
         { this.state.serverData && this.state.serverData.sourceLabel &&
