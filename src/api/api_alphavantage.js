@@ -1,5 +1,7 @@
 // api_alphavantage.js
 
+let rawWeeklyData = require("../dev-data/weeklydata.js").data;
+
 // MDN Reference On Promise constructor
 //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
@@ -50,9 +52,9 @@ let buildWeeklySeriesRequestURL = (symbol) => {
 };
 
 //.............................................................................
-let fetchChartData = (symbols) => {
+let fetchChartData = (symbol) => {
 
-  let url = buildWeeklySeriesRequestURL(symbols);
+  let url = buildWeeklySeriesRequestURL(symbol);
 
   console.log(url);
 
@@ -61,17 +63,15 @@ let fetchChartData = (symbols) => {
       .then( (resp) => resp.json())
       .then( (data) => {
         console.log("fetchChartData(): ", data);
-        // this.extractChartData(data);
+
         resolve(data);
       }
     ); // End .then( (data) => {
   });
 
-  // this.extractChartData(rawWeeklyData);
 };
 
 //.............................................................................
-// let fetchBatchData = (url) => {
 let fetchBatchData = (symbols) => {
 
   let url = buildBatchRequestURL(symbols);
