@@ -72,22 +72,24 @@ let fetchChartData = (symbol) => {
 };
 
 //.............................................................................
+// https://stackoverflow.com/questions/46004103/how-do-i-determine-the-status-code-of-a-fetch-request
+
 let fetchBatchData = (symbols) => {
 
   let url = buildBatchRequestURL(symbols);
   console.log("Batch data url: ", url);
 
   return new Promise( (resolve, reject) => {
-  //   fetch(url)
-  //     .then( (resp) => resp.json())
-  //     .then( (data) => {
-  //       // this.extractBatchData(data);
-  //       console.log("fetchBatchData(): ", data);
-  //       resolve(data);
-  //     }
-  //   ); // End .then( (data) => {
+    fetch(url)
+      .then( (resp) => resp.json())
+      .then( (data) => {
+        // this.extractBatchData(data);
+        console.log("fetchBatchData(): ", data);
+        resolve(data);
+      }
+    ); // End .then( (data) => {
 
-    resolve(fakeBatchFetchResponse);
+    // resolve(fakeBatchFetchResponse);
   });
 
 } // End api_fetchBatchData()

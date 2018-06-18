@@ -53,6 +53,7 @@ class App extends Component {
     this.state = {
       // serverData: {}
       // chartData: {}
+      statusMessage: ""
     };
   }
 
@@ -106,22 +107,25 @@ class App extends Component {
   } // End componentDidMount()
 
   //---------------------------------------------------------------------
-  addNewStockSymbol = (item) => {
+  addNewStockSymbol = (newItem) => {
+
+    this.setState({selectedItem: undefined});
 
     // Make sure that the user didn't just try to "add" a stock/symbol
     // that's already in the list.
-    let selectedsCopy = this.state.serverData.stockItems.filter( (item) => {
-      // return item.symbol === this.state.selectedItem;
-      return item.symbol === this.state.selectedItem;
+    let itemIsRepeat = this.state.serverData.stockItems.filter( (currItem) => {
+
+      return currItem.symbol === newItem;
     });
 
-    console.log("New item: " + selectedsCopy);
+    // console.log("newItem: " + newItem + " type = " + typeof newItem);
+    // console.log("Is a copy: " + itemIsRepeat);
 
-    if(selectedsCopy.length === 0) {
+    if(itemIsRepeat.length === 0) {
       // A new symbol has been entered by user
 
       // Make sure that the user has entered a valid symbol before we add it.
-      AV_api.fetchBatchData(item).then((data) => {
+      AV_api.fetchBatchData(newItem).then((data) => {
         let extractedData = this.extractBatchData(data);
 
         if(extractedData.stockItems && (extractedData.stockItems.length) > 0) {
@@ -131,20 +135,24 @@ class App extends Component {
           newServerData.stockItems = tempStockItems;
 
           let newUserData = this.state.userData;
-          newUserData.symbols.push(item);
-          //this.setState({userData: newUserData});
+          newUserData.symbols.push(newItem);
 
           this.setState(
             { serverData: newServerData,
               userData: newUserData
             }
           );
+
+          this.setState({statusMessage: ""});
+        } else {
+          // The user just tried to add a stock that doesn't exist.
+          this.setState({statusMessage: `${newItem} is not a recognized stock symbol`})
         }
       }); // End AV_api.fetchBatchData(this.state.userData.symbols).then((data) => {
 
     } else {
-      // The user just tried to add another copy of a stock/symbol that exists already
-      this.setState({statusMessage: `${item} is already in your list`})
+      // The user just tried to add another copy of a stock/symbol that is already in his/her list
+      this.setState({statusMessage: `${newItem} is already in your list`})
     }
 
   } // End addNewStockSymbol()
@@ -154,9 +162,10 @@ class App extends Component {
     console.log ("getUserSelection():" + targetItem);
     // this.setState({selectedItem: targetItem});
     this.setState({
-      selectedItem: targetItem,
-      statusMessage: `${targetItem} Selected`
+      selectedItem: targetItem
     });
+
+    this.setState({statusMessage: ""});
   }
 
   //---------------------------------------------------------------------
@@ -248,6 +257,8 @@ class App extends Component {
       else if (action === "edit") {
 
       }
+
+      this.setState({statusMessage: ""});
     }
     else {
       console.log("No item selected");
@@ -261,6 +272,7 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">Reactive Stocks Status</h1>
         </header>
+
         <SearchBar getUserInput={ this.addNewStockSymbol }/>
 
         <TickerItemList getUserSelection={ this.getUserSelection }
@@ -268,7 +280,7 @@ class App extends Component {
 
         <SelectedItemOptions selected={this.state.selectedItem} handleOptions={this.operateOnSelectedItem} />
 
-        { this.state.statusMessage &&
+        { this.state.statusMessage && (this.state.statusMessage !== "") &&
           <MessagePane message={this.state.statusMessage}></MessagePane>
         }
 

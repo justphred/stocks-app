@@ -24,7 +24,7 @@ class TickerItem extends React.Component {
             <p >{this.props.symbol}</p>
             <p>{this.props.value}</p>
             <p style={{fontSize:".65em", fontWeight:"bold"}}>
-              {this.props.timestamp.time}, {this.props.timestamp.date}
+              {this.props.timestamp.date}, {this.props.timestamp.time}
             </p>
       </li>
     )

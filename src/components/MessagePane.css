@@ -1,7 +1,10 @@
 
 .msgp-container {
   display: inline-block;
-  padding: .1em;
-  border: 1px solid #778096;
-  border-radius: .4em;
+  padding: 0.1em 0.7em;
+  border: 1px solid #a2a13e;
+  border-radius: .3em;
+  font-size: .8em;
+  margin-bottom: 0.5em;
+  color: #dd8522;
 }
