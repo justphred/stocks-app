@@ -60,7 +60,13 @@ let fetchChartData = (symbol) => {
 
   return new Promise( (resolve, reject) => {
     fetch(url)
-      .then( (resp) => resp.json())
+      // .then( (resp) => resp.json())
+      .then( (resp) => {
+        // console.log(resp);
+        console.log(`fetchChartData(): resp.ok: ${resp.ok}, resp.status: ${resp.status}, resp.redirected: ${resp.redirected}`);
+        return resp.json();
+      })
+      .catch(error => console.error("Weekly Seires Request Error: ", error))
       .then( (data) => {
         console.log("fetchChartData(): ", data);
 
@@ -80,16 +86,20 @@ let fetchBatchData = (symbols) => {
   console.log("Batch data url: ", url);
 
   return new Promise( (resolve, reject) => {
-    fetch(url)
-      .then( (resp) => resp.json())
-      .then( (data) => {
-        // this.extractBatchData(data);
-        console.log("fetchBatchData(): ", data);
-        resolve(data);
-      }
-    ); // End .then( (data) => {
+    // fetch(url)
+    //   .then( (resp) => {
+    //      console.log(`fetchBatchData(): resp.ok: ${resp.ok}, resp.status: ${resp.status}, resp.redirected: ${resp.redirected}`);
+    //      return resp.json()
+    //    })
+    //   .catch(error => console.error("Batch Request Error: ", error))
+    //   .then( (data) => {
+    //     // this.extractBatchData(data);
+    //     console.log("fetchBatchData(): ", data);
+    //     resolve(data);
+    //   }
+    // ); // End .then( (data) => {
 
-    // resolve(fakeBatchFetchResponse);
+    resolve(fakeBatchFetchResponse);
   });
 
 } // End api_fetchBatchData()

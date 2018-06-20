@@ -22,7 +22,8 @@ import AV_api from "./api/api_alphavantage";
 
 let fakeUserData = {
   name: "Matt Dillon",
-  symbols: ["MSFT", "FB", "AAPL"]
+  // symbols: ["MSFT", "FB", "AAPL"]
+  symbols: ["GE", "BAC", "NOC"]
 };
 
 // ----------------------------------------------------------------------------
@@ -108,6 +109,8 @@ class App extends Component {
 
   //---------------------------------------------------------------------
   addNewStockSymbol = (newItem) => {
+
+    newItem = newItem.toUpperCase();
 
     this.setState({selectedItem: undefined});
 
