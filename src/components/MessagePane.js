@@ -1,5 +1,6 @@
 import React from "react";
 import "./MessagePane.css";
+import PropTypes from "prop-types";
 
 class MessagePane extends React.Component {
 
@@ -15,6 +16,10 @@ class MessagePane extends React.Component {
 
   } // End method render()
 
+}
+
+MessagePane.propTypes = {
+  message: PropTypes.string
 }
 
 export default MessagePane;

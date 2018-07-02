@@ -1,5 +1,6 @@
 import React from "react";
 import "./ChartComponent.css";
+import PropTypes from "prop-types";
 import {Line} from "react-chartjs-2";
 
 //  const data = {
@@ -69,5 +70,10 @@ class ChartComponent extends React.Component {
   }
 };
 
+ChartComponent.propTypes = {
+  chartType: PropTypes.string,
+  symbol: PropTypes.string,
+  data: PropTypes.object
+}
 
 export default ChartComponent;

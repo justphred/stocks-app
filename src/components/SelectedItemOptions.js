@@ -1,5 +1,6 @@
 import React from "react";
 import "./SelectedItemOptions.css";
+import PropTypes from "prop-types";
 
 // https://stackoverflow.com/questions/14750078/style-disabled-button-with-css
 
@@ -46,6 +47,10 @@ class SelectedItemOptions extends React.Component {
     );
 
   }; // End render()
+};
+
+SelectedItemOptions.propTypes = {
+  handleOptions: PropTypes.func
 };
 
 export default SelectedItemOptions;

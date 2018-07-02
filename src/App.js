@@ -163,7 +163,7 @@ class App extends Component {
   //---------------------------------------------------------------------
   getUserSelection = (targetItem) => {
     console.log ("getUserSelection():" + targetItem);
-    // this.setState({selectedItem: targetItem});
+    
     this.setState({
       selectedItem: targetItem
     });
