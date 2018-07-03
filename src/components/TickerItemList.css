@@ -1,5 +1,13 @@
 .til-container {
-  display: inline-block;
+  /* display: inline-block; */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+
+  width: 70%;
+  margin: 0 15%;
+
   padding: .1em;
   border: 1px solid #778096;
   border-radius: .4em;

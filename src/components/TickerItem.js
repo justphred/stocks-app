@@ -1,5 +1,6 @@
 import React from "react";
 import "./TickerItem.css";
+import PropTypes from "prop-types";
 
 class TickerItem extends React.Component {
 
@@ -30,6 +31,13 @@ class TickerItem extends React.Component {
     )
   }
 } // End component TickerItem
+
+TickerItem.propTypes = {
+  getUserSelection: PropTypes.func,
+  symbol: PropTypes.string,
+  value: PropTypes.string,
+  timestamp: PropTypes.object
+};
 
 export default TickerItem;
 

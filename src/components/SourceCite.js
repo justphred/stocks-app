@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 class SourceCite extends React.Component {
 
@@ -10,5 +11,9 @@ class SourceCite extends React.Component {
     );
   };
 }
+
+SourceCite.propTypes = {
+  citation: PropTypes.string
+};
 
 export default SourceCite;
